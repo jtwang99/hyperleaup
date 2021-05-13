@@ -193,11 +193,11 @@ class HyperFile:
                     inserter.add_rows(rows=data)
                     inserter.execute()
 
-	def delete(self, where_condition):
-		# Start Hyper
-		with HyperProcess(telemetry=Telemetry.SEND_USAGE_DATA_TO_TABLEAU ) as hyper:
-		    #  Connect to an existing .hyper file (CreateMode.NONE)
-			with Connection(endpoint=hyper.endpoint, database=self.path) as connection:
-				delete_command = 'DELETE FROM "Extract"."Extract" WHERE {}'.format(where_condition)
-			    row_count = connection.execute_command(command = delete_command)
-				logging.info(f'{delete_command}, row_count={row_count}')
+    def delete(self, where_condition):
+	# Start Hyper
+	with HyperProcess(telemetry=Telemetry.SEND_USAGE_DATA_TO_TABLEAU ) as hyper:
+            #  Connect to an existing .hyper file (CreateMode.NONE)
+            with Connection(endpoint=hyper.endpoint, database=self.path) as connection:
+		delete_command = 'DELETE FROM "Extract"."Extract" WHERE {}'.format(where_condition)
+		row_count = connection.execute_command(command = delete_command)
+		logging.info(f'{delete_command}, row_count={row_count}')
