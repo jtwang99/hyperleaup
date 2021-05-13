@@ -76,6 +76,17 @@ class HyperFile:
 
         return self.luid
 
+    def publish_append(self, tableau_server_url: str,
+                username: str, password: str, site_id: str = "",
+                project_name: str = "Default", datasource_name: str = "Hyperleaup_Extract") -> str:
+        """Publishes a Hyper File to a Tableau Server"""
+        logging.info("Publishing Hyper File...")
+        publisher = Publisher(tableau_server_url, username, password,
+                              site_id, project_name, datasource_name, self.path)
+        self.luid = publisher.publish(creation_mode='Append')
+        logging.info(f"Hyper File published (append) to Tableau Server with datasource LUID : {self.luid}")
+
+        return self.luid
     def save(self, path: str) -> str:
         """Saves a Hyper File to a destination path"""
         # Guard against invalid paths
@@ -181,3 +192,12 @@ class HyperFile:
                 with Inserter(connection, table_def) as inserter:
                     inserter.add_rows(rows=data)
                     inserter.execute()
+
+	def delete(self, where_condition):
+		# Start Hyper
+		with HyperProcess(telemetry=Telemetry.SEND_USAGE_DATA_TO_TABLEAU ) as hyper:
+		    #  Connect to an existing .hyper file (CreateMode.NONE)
+			with Connection(endpoint=hyper.endpoint, database=self.path) as connection:
+				delete_command = 'DELETE FROM "Extract"."Extract" WHERE {}'.format(where_condition)
+			    row_count = connection.execute_command(command = delete_command)
+				logging.info(f'{delete_command}, row_count={row_count}')
