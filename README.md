@@ -83,6 +83,8 @@ They will be reviewed as time permits, but there are no formal SLAs for support.
 To build the project: <br>
 ```
 python setup.py bdist_egg
+or
+python setup.py bdist_wheel
 ```
 
 ## Running Pytests
